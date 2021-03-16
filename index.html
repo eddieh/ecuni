@@ -1,0 +1,320 @@
+<!-- -*- eval: (electric-indent-local-mode -1) -*- -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ecuni.js</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link href="style.css" rel="stylesheet">
+<script src="ecuni.js"></script>
+</head>
+<body>
+
+<header class="page-header">
+  <h1 style="">ecuni.js</h1>
+  <h2 style=""><span>Ec</span>maScript <span>Uni</span>t Tests - a
+    JavaScript unit test library</h2>
+</header>
+
+<section>
+  <h2>Intro</h2>
+  <p>ecuni is dumb and probably isn't what you're looking for. It's a
+    µ-testing library with zero dependencies.</p>
+</section>
+
+<section>
+  <h2>API</h2>
+  <p>Quick and easy API for defining tests suites</p>
+  <dl>
+    <dt><tt>describe(name, behaviors)</tt></dt>
+    <dd>define a test suite with <code>name</code>
+    and <code>behaviors</code> </dd>
+
+    <dt><tt>it(description, behavior)</tt></dt>
+    <dd>define a behavior to test with <code>description</code>
+    and <code>behavior</code></dd>
+
+    <dt><tt>assert(condition, description)</tt></dt>
+    <dd>check <code>condition</code>
+    with <code>description</code></dd>
+  </dl>
+  <p>The API for running tests and generating reports</p>
+  <dl>
+    <dt>Units.run()</dt>
+    <dd>run the test suites</dd>
+    <dt>Units.report(callback)</dt>
+    <dd>generate a report</dd>
+    <dt>Units.stats(callback)</dt>
+    <dd>generate a stats report</dd>
+    <dt>Units.reset()</dt>
+    <dd>reset internal state</dd>
+</section>
+
+<section>
+  <div class="row">
+    <div class="">
+      <h2>Example tests definition</h2>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+      Donec hendrerit tempor tellus. Donec pretium posuere tellus.
+      Proin quam nisl, tincidunt et, mattis eget, convallis nec,
+      purus.</p>
+<pre id="exampleDef1"></pre>
+    </div>
+    <div class="">
+    </div>
+  </div>
+<script id="exampleSrc1">
+describe('Example one', function () {
+    it('test one', function () {
+        assert(true, 'true is true')
+    })
+    it('test two', function () {
+        assert(true, 'so true')
+    })
+    it('test three', function () {
+        assert(true, 'truth')
+    })
+})
+describe('Example two', function () {
+    it('test 1', function () {
+        assert(true, 'true to its nature')
+    })
+    it('test 2', function () {
+        assert(true, 'truly')
+    })
+    it('test 3', function () {
+        assert(1, 'truthy')
+    })
+})
+</script>
+<script>
+exampleDef1.innerText = exampleSrc1.textContent.trim()
+</script>
+</section>
+
+<section>
+  <div class="row">
+    <div class="">
+      <h2>Log callback</h2>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+      Donec hendrerit tempor tellus. Donec pretium posuere tellus.
+      Proin quam nisl, tincidunt et, mattis eget, convallis nec,
+      purus.</p>
+    </div>
+    <div class="">
+      <h3>Description</h3>
+      <p><code>Units.report(callback)</code></p>
+      <p>The callback function takes three
+      parameters, <code>type</code>, <code>name</code>,
+      and <code>passed</code>.</p>
+      <p><code>Units.report(function (type, name, passed) { ... })</code></p>
+      <dl>
+        <dt><tt>type</tt></dt>
+        <dd>one of the strings 'suite', 'behavior', or 'assert'</dd>
+
+        <dt><tt>name</tt></dt>
+        <dd>a string that identifies the suite, behavior, or
+        assert</dd>
+
+        <dt><tt>passed</tt></dt>
+        <dd>a boolean indicating the pass/fail of the suite, behavior,
+        or assert</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="">
+      <h3>Example</h3>
+      <pre id="logReportFn" class=""></pre>
+    </div>
+
+    <div class="">
+      <h3>Output</h3>
+      <pre id="logReportOutput"></pre>
+    </div>
+  </div>
+<script>
+var consoleLog = console.log
+console.log = function(t) {
+    logReportOutput.innerText += `${t}\n`
+}
+</script>
+<script id="logReportSrc">
+Units.reset()
+/*STRIP*/eval(exampleSrc1.textContent)/*STRIP!*/
+Units.run()
+Units.report(function(type, name, passed) {
+    function reportPass(passed) {
+        return `${passed ? '✅' : '🚫'}`
+    }
+    function reportLevel(type) {
+        return {
+            suite: '',
+            behavior: '    ',
+            assert: '        '
+        }[type]
+    }
+    let logText = `${reportLevel(type)} ${reportPass(passed)} ${name}`
+    console.log(logText)
+})
+</script>
+<script>
+var src1 = logReportSrc.textContent.trim()
+src1 = src1.replace(/\/\*STRIP[\s\S]+?STRIP!\*\//, '// test definitions ...')
+logReportFn.innerText = src1
+console.log = consoleLog
+</script>
+</section>
+
+<section>
+<style id="domReportCSS">
+ul { list-style:none; padding-inline-start: 1em; }
+ul li > span { padding-left: 1em; }
+details:focus, summary:focus { outline: none; }
+.pass::before { content: "✓ "; color: green; }
+.fail::before { content: "✗ "; color: red; }
+</style>
+
+  <div class="row">
+    <div class="">
+      <h2>DOM callback</h2>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+      Donec hendrerit tempor tellus. Donec pretium posuere tellus.
+      Proin quam nisl, tincidunt et, mattis eget, convallis nec,
+      purus.</p>
+    </div>
+    <div class="">
+      <h3>DOM Report CSS</h3>
+      <pre id="domReportCSSDefs"></pre>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="">
+      <h3>Example</h3>
+      <pre id="domReportFn"></pre>
+    </div>
+
+    <div class="">
+      <h3>Output</h3>
+      <ul class="report" id="domOutput"></ul>
+    </div>
+
+  </div>
+
+<script id="domReportSrc">
+Units.reset()
+/*STRIP*/eval(exampleSrc1.textContent)/*STRIP!*/
+Units.run()
+var curReport = domOutput
+var curSuite = null
+var curBehavior = null
+Units.report(function(type, name, passed) {
+    function className(passed) {
+        return `${passed ? 'pass' : 'fail'}`
+    }
+    var domBuilder = {
+        suite: function () {
+            let li = document.createElement('li')
+            let details = document.createElement('details')
+            let summary = document.createElement('summary')
+            let span = document.createElement('span')
+            let ul = document.createElement('ul')
+            li.className = type
+            span.className = className(passed)
+            span.innerText = name
+            summary.appendChild(span)
+            details.appendChild(summary)
+            details.appendChild(ul)
+            li.appendChild(details)
+            curSuite = ul
+            curReport.appendChild(li)
+        },
+        behavior: function () {
+            let li = document.createElement('li')
+            let details = document.createElement('details')
+            let summary = document.createElement('summary')
+            let span = document.createElement('span')
+            let ul = document.createElement('ul')
+            li.className = type
+            span.className = className(passed)
+            span.innerText = name
+            summary.appendChild(span)
+            details.appendChild(summary)
+            details.appendChild(ul)
+            li.appendChild(details)
+            curBehavior = ul
+            curSuite.appendChild(li)
+        },
+        assert: function () {
+            let li = document.createElement('li')
+            let span = document.createElement('span')
+            li.className = type
+            span.className = className(passed)
+            span.innerText = name
+            li.appendChild(span)
+            curBehavior.appendChild(li)
+        },
+    }
+    domBuilder[type]()
+})
+</script>
+<script>
+var src1 = domReportSrc.textContent.trim()
+src1 = src1.replace(/\/\*STRIP[\s\S]+?STRIP!\*\//, '// test definitions ...')
+domReportFn.innerText = src1
+domReportCSSDefs.innerText = domReportCSS.textContent.trim()
+</script>
+</section>
+
+<section>
+  <h2>More examples</h2>
+</section>
+
+<section>
+  <h2>Tests</h2>
+
+<script>
+</script>
+</section>
+
+<section>
+  <h2>Acknowledgments</h2>
+</section>
+
+<section>
+<h2>License</h2>
+<pre class="no-style">
+MIT LICENSE
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre>
+</section>
+
+<footer>
+<p class="copy">Copyright © 2021 Eddie Hillenbrand</p>
+</footer>
+
+</body>
+</html>
